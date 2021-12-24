@@ -1,32 +1,18 @@
 import sys
 import pygame
 
+from Body import Body
+
 MAX_FPS = 60
 
 
-class Body(object):
-    def __init__(self, pos, size):
-        self._color = (255, 255, 255)
-        self._pos = pos
-        self._size = size
-        return
+def controls(player, dt):
+    keys = pygame.key.get_pressed()
 
-    def render(self, surface, dt):
-        pygame.draw.rect(surface, self._color, (self._pos + self._size))
-
-        keys = pygame.key.get_pressed()
-
-        self._pos[0] += (keys[pygame.K_RIGHT] - keys[pygame.K_LEFT]) * dt
-        self._pos[1] += (keys[pygame.K_DOWN] - keys[pygame.K_UP]) * dt
-
-        return
-
-    def change_color(self, new_color):
-        self._color = new_color
-        return
-
-    def handle_event(self, event):
-        pass
+    player.apply_force(pygame.math.Vector2(
+        (keys[pygame.K_RIGHT] - keys[pygame.K_LEFT]) * dt,
+        (keys[pygame.K_DOWN] - keys[pygame.K_UP]) * dt
+    ))
 
 
 def main():
@@ -36,9 +22,14 @@ def main():
     screen = pygame.display.set_mode(size)
     clock = pygame.time.Clock()
 
+    player = Body([0, 0], [64, 64])
+
     game_objects = [
-        Body([0, 0], [64, 64])
+        player,
+        Body([0, height - 10], [width, 10])  # floor
     ]
+
+    dt = 0
 
     while True:
         # Handle events
@@ -56,11 +47,13 @@ def main():
 
         # Render game objects
         for obj in game_objects:
-            obj.render(screen, clock.get_time())
+            obj.physics(game_objects, dt)
+            obj.render(screen)
+        controls(player, dt)
 
         # Complete the frame
         pygame.display.update()
-        clock.tick(MAX_FPS)
+        dt = clock.tick(MAX_FPS) / 1000.0
 
 
 def quit_game(status=0):
