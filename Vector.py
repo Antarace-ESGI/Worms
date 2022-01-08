@@ -1,6 +1,10 @@
 import math
 
 
+def zero():
+    return Point(0, 0)
+
+
 class Point:
     def __init__(self, x, y):
         self.x = x
@@ -30,21 +34,13 @@ class Vector:
 
         return math.acos(s / (self.norm() * vec.norm())) * sign
 
-    def mult_scalar(self, sca: float):
-        vec = Vector(self._a, self._b)
-
-        vec.x *= sca
-        vec.y *= sca
-
-        return vec
+    def __mul__(self, other: float):
+        self.x *= other
+        self.y *= other
 
     def __add__(self, other: "Vector|Point"):
-        vec = Vector(self._a, self._b)
-
-        vec.x += other.x
-        vec.y += other.y
-
-        return vec
+        self.x += other.x
+        self.y += other.y
 
     """Calcul non correct"""
     def proj(self, vec: "Vector"):
@@ -70,3 +66,6 @@ class Vector:
     def intersect(self, vec: "Vector"):
         # TODO: implement method
         return vec
+
+    def __str__(self):
+        return "({0}, {1})".format(self.x, self.y)

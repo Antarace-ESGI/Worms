@@ -1,35 +1,32 @@
 import pygame
 
+from Vector import Vector, Point, zero
+
 GRAVITY = 9.81
 SPEED = 10
 
 
 class Body(object):
-    def __init__(self, pos: pygame.math.Vector2, size: pygame.math.Vector2, has_gravity: bool = True):
+    def __init__(self, pos: Vector, size: Vector, has_gravity: bool = True):
         self._color = (255, 255, 255)
-        self._pos = pos
+        self.pos = pos
         self._size = size
-        self._velocity = pygame.math.Vector2(0, 0)
+        self.velocity = Vector(zero(), zero())
         self._has_gravity = has_gravity
-        self.rect = pygame.rect.Rect(self._pos.x, self._pos.y, self._size.x, self._size.y)
+        self.rect = pygame.rect.Rect(self.pos.x, self.pos.y, self._size.x, self._size.y)
         return
 
-    def apply_force(self, force: pygame.math.Vector2):
-        self._velocity += force
+    def apply_force(self, force: Vector):
+        self.velocity += force
         pass
 
-    def physics(self, world: "list[Body]", dt):
-        self.rect = pygame.rect.Rect(self._pos.x, self._pos.y, self._size.x, self._size.y)
+    def physics(self, world: "list[Body]", dt: float):
+        self.rect = pygame.rect.Rect(self.pos.x, self.pos.y, self._size.x, self._size.y)
 
         if self._has_gravity:
-            self._velocity.y += GRAVITY * dt
+            self.velocity.y += GRAVITY * dt
 
-        for obj in world:
-            if obj is not self and self.rect.colliderect(obj.rect):
-                self._velocity = self._velocity.rotate(180)
-                obj._velocity = obj._velocity.rotate(180)
-
-        self._pos += self._velocity * dt * SPEED
+        #self.pos += self.velocity
 
     def render(self, surface: pygame.Surface):
         pygame.draw.rect(surface, self._color, self.rect)
