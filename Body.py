@@ -1,13 +1,11 @@
 import pygame
 
+from Constants import SPEED, GRAVITY, FRICTION
 from Vector import Vector, Point, zero
-
-GRAVITY = 9.81
-SPEED = 10
 
 
 class Body(object):
-    def __init__(self, pos: Vector, size: Vector, has_gravity: bool = True):
+    def __init__(self, pos: Point, size: Point, has_gravity: bool = True):
         self._color = (255, 255, 255)
         self.pos = pos
         self._size = size
@@ -16,17 +14,20 @@ class Body(object):
         self.rect = pygame.rect.Rect(self.pos.x, self.pos.y, self._size.x, self._size.y)
         return
 
-    def apply_force(self, force: Vector):
-        self.velocity += force
+    def apply_force(self, force: Point):
+        self.velocity.x += force.x
+        self.velocity.y += force.y
         pass
 
     def physics(self, world: "list[Body]", dt: float):
         self.rect = pygame.rect.Rect(self.pos.x, self.pos.y, self._size.x, self._size.y)
 
         if self._has_gravity:
-            self.velocity.y += GRAVITY * dt
+            self.velocity.y += GRAVITY * dt * SPEED
 
-        #self.pos += self.velocity
+        self.pos += self.velocity
+
+        self.velocity *= FRICTION
 
     def render(self, surface: pygame.Surface):
         pygame.draw.rect(surface, self._color, self.rect)

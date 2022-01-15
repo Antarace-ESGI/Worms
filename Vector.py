@@ -10,6 +10,18 @@ class Point:
         self.x = x
         self.y = y
 
+    def __mul__(self, other: float):
+        self.x *= other
+        self.y *= other
+
+        return self
+
+    def __add__(self, other: "Vector|Point"):
+        self.x += other.x
+        self.y += other.y
+
+        return self
+
 
 class Vector:
     def __init__(self, a: Point, b: Point):
@@ -38,9 +50,13 @@ class Vector:
         self.x *= other
         self.y *= other
 
+        return self
+
     def __add__(self, other: "Vector|Point"):
         self.x += other.x
         self.y += other.y
+
+        return self
 
     """Calcul non correct"""
     def proj(self, vec: "Vector"):
@@ -48,7 +64,7 @@ class Vector:
 
         f = s / vec.norm()
 
-        return vec.mult_scalar(f) + self._a
+        return vec * f + self._a
 
     def sym(self, vec: "Vector"):
         # TODO: implement method

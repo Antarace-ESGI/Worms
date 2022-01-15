@@ -2,17 +2,16 @@ import sys
 import pygame
 
 from Body import Body
+from Constants import SPEED, MAX_FPS
 from Vector import Vector, Point, zero
-
-MAX_FPS = 60
 
 
 def controls(player, dt):
     keys = pygame.key.get_pressed()
 
-    player.apply_force(Vector(
-        (keys[pygame.K_RIGHT] - keys[pygame.K_LEFT]) * dt * 1000,
-        (keys[pygame.K_DOWN] - keys[pygame.K_UP]) * dt * 1000
+    player.apply_force(Point(
+        (keys[pygame.K_RIGHT] - keys[pygame.K_LEFT]) * dt * SPEED,
+        (keys[pygame.K_DOWN] - keys[pygame.K_UP]) * dt * SPEED
     ))
 
 
@@ -23,8 +22,8 @@ def main():
     screen = pygame.display.set_mode(size)
     clock = pygame.time.Clock()
 
-    player = Body(Vector(zero(), zero()), Vector(zero(), Point(64, 64)), False)
-    floor = Body(Vector(zero(), zero()), Vector(zero(), Point(0, height - 10)), False)
+    player = Body(zero(), Point(64, 64), True)
+    floor = Body(Point(0, height - 10), Point(width, 10), False)
 
     game_objects = [
         player,
@@ -46,8 +45,6 @@ def main():
 
         # Clear the screen
         screen.fill((140, 180, 255))
-
-        print(player.velocity)
 
         # Render game objects
         for obj in game_objects:
