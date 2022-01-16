@@ -16,7 +16,7 @@ class Point:
 
         return self
 
-    def __add__(self, other: "Vector|Point"):
+    def __add__(self, other: "Point"):
         self.x += other.x
         self.y += other.y
 

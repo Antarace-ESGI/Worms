@@ -3,7 +3,7 @@ import pygame
 
 from Body import Body
 from Constants import SPEED, MAX_FPS
-from Vector import Vector, Point, zero
+from Vector import Point, zero
 
 
 def controls(player, dt):

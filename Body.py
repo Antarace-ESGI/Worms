@@ -25,6 +25,11 @@ class Body(object):
         if self._has_gravity:
             self.velocity.y += GRAVITY * dt * SPEED
 
+        # Collisions
+        for body in world:
+            if body.velocity.intersect(self.velocity):
+                print("intersect")
+
         self.pos += self.velocity
 
         self.velocity *= FRICTION
