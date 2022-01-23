@@ -22,7 +22,7 @@ def main():
     screen = pygame.display.set_mode(size)
     clock = pygame.time.Clock()
 
-    player = Body(zero(), Point(64, 64), True)
+    player = Body(zero(), Point(64, 64), False)
     floor = Body(Point(0, height - 10), Point(width, 10), False)
 
     game_objects = [

@@ -25,17 +25,15 @@ class Body(object):
         if self._has_gravity:
             self.velocity.y += GRAVITY * dt * SPEED
 
-        # Collisions
-        for body in world:
-            if body.velocity.intersect(self.velocity):
-                print("intersect")
-
         self.pos += self.velocity
 
         self.velocity *= FRICTION
 
     def render(self, surface: pygame.Surface):
         pygame.draw.rect(surface, self._color, self.rect)
+
+        vec = self.velocity.clone() * 100
+        pygame.draw.line(surface, (0, 0, 0), self.pos.to_tuple(), (self.pos + vec).to_tuple())
 
         return
 
