@@ -22,11 +22,13 @@ def main():
     screen = pygame.display.set_mode(size)
     clock = pygame.time.Clock()
 
-    player = Body(zero(), Point(64, 64), False)
-    floor = Body(Point(0, height - 10), Point(width, 10), False)
+    player1 = Body(zero(), Point(64, 64), (255, 0, 0), False)
+    player2 = Body(zero(), Point(64, 64), (0, 255, 0), False)
+    floor = Body(Point(0, height - 10), Point(width, 10), (255, 255, 255), False)
 
     game_objects = [
-        player,
+        player1,
+        player2,
         floor,
     ]
 
@@ -50,7 +52,7 @@ def main():
         for obj in game_objects:
             obj.physics(game_objects, dt)
             obj.render(screen)
-        controls(player, dt)
+        controls(player1, dt)
 
         # Complete the frame
         pygame.display.update()

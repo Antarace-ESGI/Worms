@@ -2,11 +2,12 @@ import pygame
 
 from Constants import SPEED, GRAVITY, FRICTION
 from Vector import Vector, Point, zero
+from typing import Tuple
 
 
 class Body(object):
-    def __init__(self, pos: Point, size: Point, has_gravity: bool = True):
-        self._color = (255, 255, 255)
+    def __init__(self, pos: Point, size: Point, color: Tuple[int, int, int] = (255, 255, 255), has_gravity: bool = True):
+        self._color = color
         self.pos = pos
         self._size = size
         self.velocity = Vector(zero(), zero())
