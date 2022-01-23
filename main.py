@@ -1,4 +1,5 @@
 import sys
+import time
 import pygame
 
 from Body import Body
@@ -34,6 +35,9 @@ def main():
 
     dt = 0
 
+    turn = True
+    turn_start = time.time()
+
     while True:
         # Handle events
         for event in pygame.event.get():
@@ -52,7 +56,17 @@ def main():
         for obj in game_objects:
             obj.physics(game_objects, dt)
             obj.render(screen)
-        controls(player1, dt)
+
+        # Compare actual time with time at the beginning of this turn
+        if int(time.time() - turn_start) == 30:
+            turn = not turn
+            turn_start = time.time()
+
+        # Multiplayer turn by turn
+        if turn:
+            controls(player1, dt)
+        else:
+            controls(player2, dt)
 
         # Complete the frame
         pygame.display.update()
@@ -62,6 +76,7 @@ def main():
 def quit_game(status=0):
     pygame.quit()
     sys.exit(status)
+
 
 
 if __name__ == "__main__":
