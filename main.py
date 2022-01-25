@@ -37,6 +37,11 @@ def main():
 
     turn = True
     turn_start = time.time()
+    turn_duration = 5
+
+    font = pygame.font.Font('freesansbold.ttf', 24)
+    text = font.render(f'{turn_duration}', True, (0, 0, 0))
+    timer = text.get_rect().center = (width // 2, height * 0.05)
 
     while True:
         # Handle events
@@ -51,6 +56,7 @@ def main():
 
         # Clear the screen
         screen.fill((140, 180, 255))
+        screen.blit(text, timer)
 
         # Render game objects
         for obj in game_objects:
@@ -58,7 +64,7 @@ def main():
             obj.render(screen)
 
         # Compare actual time with time at the beginning of this turn
-        if int(time.time() - turn_start) == 30:
+        if int(time.time() - turn_start) == turn_duration:
             turn = not turn
             turn_start = time.time()
 
@@ -68,6 +74,9 @@ def main():
         else:
             controls(player2, dt)
 
+        # Display the timer
+        text = font.render(f'{turn_duration - int(time.time() - turn_start)}', True, (0, 0, 0))
+
         # Complete the frame
         pygame.display.update()
         dt = clock.tick(MAX_FPS) / 1000.0
@@ -76,7 +85,6 @@ def main():
 def quit_game(status=0):
     pygame.quit()
     sys.exit(status)
-
 
 
 if __name__ == "__main__":
