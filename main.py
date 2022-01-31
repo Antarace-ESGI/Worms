@@ -1,3 +1,4 @@
+import math
 import sys
 import time
 import pygame
@@ -7,6 +8,9 @@ from Constants import SPEED, MAX_FPS
 from Vector import Point, zero
 
 
+game_objects: list[Body] = []
+
+
 def controls(player, dt):
     keys = pygame.key.get_pressed()
 
@@ -14,6 +18,18 @@ def controls(player, dt):
         (keys[pygame.K_RIGHT] - keys[pygame.K_LEFT]) * dt * SPEED,
         (keys[pygame.K_DOWN] - keys[pygame.K_UP]) * dt * SPEED
     ))
+
+
+def shoot_controls(player, event):
+    if event.type == pygame.MOUSEBUTTONUP:
+        x, y = pygame.mouse.get_pos()
+        angle = math.atan2(y - player.pos.y, x - player.pos.x)
+
+        print(angle)
+        projectile = Body(Point(player.pos.x, player.pos.y), Point(16, 16), (255, 255, 255), False, False)
+        projectile.velocity.x = math.cos(angle) * 0.1
+        projectile.velocity.y = math.sin(angle) * 0.1
+        game_objects.append(projectile)
 
 
 def main():
@@ -27,11 +43,9 @@ def main():
     player2 = Body(zero(), Point(64, 64), (0, 255, 0), False)
     floor = Body(Point(0, height - 10), Point(width, 10), (255, 255, 255), False)
 
-    game_objects = [
-        player1,
-        player2,
-        floor,
-    ]
+    game_objects.append(player1)
+    game_objects.append(player2)
+    game_objects.append(floor)
 
     dt = 0
 
@@ -49,6 +63,12 @@ def main():
             # Let game objects handle events they care about
             for obj in game_objects:
                 obj.handle_event(event)
+
+            # Handle shoot controls
+            if turn:
+                shoot_controls(player1, event)
+            else:
+                shoot_controls(player2, event)
 
             # Handle global events
             if event.type == pygame.QUIT:

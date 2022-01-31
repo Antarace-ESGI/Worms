@@ -6,12 +6,14 @@ from typing import Tuple
 
 
 class Body(object):
-    def __init__(self, pos: Point, size: Point, color: Tuple[int, int, int] = (255, 255, 255), has_gravity: bool = True):
+    def __init__(self, pos: Point, size: Point, color: Tuple[int, int, int] = (255, 255, 255), has_gravity: bool = True,
+                 has_friction=True):
         self._color = color
         self.pos = pos
         self._size = size
         self.velocity = Vector(zero(), zero())
         self._has_gravity = has_gravity
+        self._has_friction = has_friction
         self.rect = pygame.rect.Rect(self.pos.x, self.pos.y, self._size.x, self._size.y)
         return
 
@@ -28,7 +30,8 @@ class Body(object):
 
         self.pos += self.velocity
 
-        self.velocity *= FRICTION
+        if self._has_friction:
+            self.velocity *= FRICTION
 
     def render(self, surface: pygame.Surface):
         pygame.draw.rect(surface, self._color, self.rect)
