@@ -19,7 +19,7 @@ def controls(player, dt):
 def main():
     # Initialization
     pygame.init()
-    size = width, height = 640, 360
+    size = width, height = 1280, 720
     screen = pygame.display.set_mode(size)
     clock = pygame.time.Clock()
 
