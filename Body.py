@@ -1,3 +1,5 @@
+import math
+
 import pygame
 
 from Constants import SPEED, GRAVITY, FRICTION
@@ -10,11 +12,11 @@ class Body(object):
                  has_friction=True):
         self._color = color
         self.pos = pos
-        self._size = size
+        self.size = size
         self.velocity = Vector(zero(), zero())
         self._has_gravity = has_gravity
         self._has_friction = has_friction
-        self.rect = pygame.rect.Rect(self.pos.x, self.pos.y, self._size.x, self._size.y)
+        self.rect = pygame.rect.Rect(self.pos.x, self.pos.y, self.size.x, self.size.y)
         return
 
     def apply_force(self, force: Point):
@@ -23,10 +25,17 @@ class Body(object):
         pass
 
     def physics(self, world: "list[Body]", dt: float):
-        self.rect = pygame.rect.Rect(self.pos.x, self.pos.y, self._size.x, self._size.y)
+        self.rect = pygame.rect.Rect(self.pos.x, self.pos.y, self.size.x, self.size.y)
 
         if self._has_gravity:
-            self.velocity.y += GRAVITY * dt * SPEED
+            self.velocity.y += GRAVITY * dt
+
+        for body in world:
+            if body is not self:
+                if self.pos.x < body.pos.x + body.size.x and body.pos.x < self.pos.x + self.size.x and self.pos.y < body.pos.y + body.size.y and body.pos.y < self.pos.y + self.size.y:
+                    angle = math.atan2(self.pos.y - body.pos.y, self.pos.x - body.pos.x)
+                    self.velocity.y = -self.velocity.y / 2
+                    self.velocity.x = -self.velocity.x / 2
 
         self.pos += self.velocity
 

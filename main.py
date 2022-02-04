@@ -4,7 +4,7 @@ import time
 import pygame
 
 from Body import Body
-from Constants import SPEED, MAX_FPS
+from Constants import SPEED, MAX_FPS, FLOOR_HEIGHT
 from Vector import Point, zero
 
 
@@ -25,8 +25,8 @@ def shoot_controls(player, event):
         x, y = pygame.mouse.get_pos()
         angle = math.atan2(y - player.pos.y, x - player.pos.x)
 
-        print(angle)
-        projectile = Body(Point(player.pos.x, player.pos.y), Point(16, 16), (255, 255, 255), False, False)
+        pos = Point(player.pos.x + math.cos(angle) * player.size.x + player.size.x / 2, player.pos.y + math.sin(angle) * player.size.y + player.size.y / 2)
+        projectile = Body(pos, Point(16, 16), (255, 255, 255), True, False)
         projectile.velocity.x = math.cos(angle) * 0.1
         projectile.velocity.y = math.sin(angle) * 0.1
         game_objects.append(projectile)
@@ -39,9 +39,9 @@ def main():
     screen = pygame.display.set_mode(size)
     clock = pygame.time.Clock()
 
-    player1 = Body(zero(), Point(64, 64), (255, 0, 0), False)
-    player2 = Body(zero(), Point(64, 64), (0, 255, 0), False)
-    floor = Body(Point(0, height - 10), Point(width, 10), (255, 255, 255), False)
+    player1 = Body(zero(), Point(64, 64), (255, 0, 0), True, False)
+    player2 = Body(Point(256, 0), Point(64, 64), (0, 255, 0), True, False)
+    floor = Body(Point(0, height - FLOOR_HEIGHT), Point(width, FLOOR_HEIGHT), (255, 255, 255), False)
 
     game_objects.append(player1)
     game_objects.append(player2)
