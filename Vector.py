@@ -1,61 +1,17 @@
 import math
 
 
-def zero():
-    return Point(0, 0)
+def zero_vector():
+    return Vector(0, 0)
 
 
-class Point:
-    def __init__(self, x, y):
+class Vector:
+    def __init__(self, x: float, y: float):
         self.x = x
         self.y = y
 
     def clone(self):
-        return Point(self.x, self.y)
-
-    def __mul__(self, other: float):
-        self.x *= other
-        self.y *= other
-
-        return self
-
-    def __add__(self, other: "Point"):
-        self.x += other.x
-        self.y += other.y
-
-        return self
-
-    def add_scalar(self, other: float):
-        self.x += other
-        self.y += other
-
-        return self
-
-    def mul_vector(self, vec: "Vector"):
-        self.x *= vec.x
-        self.y *= vec.y
-
-        return self
-
-    def __str__(self):
-        return "({0}, {1})".format(self.x, self.y)
-
-    def to_tuple(self):
-        return self.x, self.y
-
-
-class Vector:
-    def __init__(self, a: Point, b: Point):
-        self.a = a
-        self.b = b
-
-        self.x = b.x - a.x
-        self.y = b.y - a.y
-
-    def clone(self):
-        vec = Vector(self.a.clone(), self.b.clone())
-        vec.x = self.x
-        vec.y = self.y
+        vec = Vector(self.x, self.y)
         return vec
 
     def scalar(self, vec: "Vector"):
@@ -64,59 +20,112 @@ class Vector:
     def norm(self):
         return math.sqrt(math.pow(self.x, 2) + math.pow(self.y, 2))
 
+    def length(self):
+        return math.sqrt(self.x * self.x + self.y * self.y)
+
+    def normalize(self):
+        length = self.length()
+        return Vector(self.x / length, self.y / length)
+
+    def dot(self, other: "Vector"):
+        return self.x * other.x + self.y * other.y
+
     def angle(self, vec: "Vector"):
         s = self.scalar(vec)
-
         sign = self.x * vec.y - vec.x * self.y  # déterminant d'une matrice
-
         sign = -1 if sign < 0 else 1
-
         return math.acos(s / (self.norm() * vec.norm())) * sign
 
-    def __mul__(self, other: float):
-        self.x *= other
-        self.y *= other
+    def __mul__(self, other: "Vector|float|int"):
+        result = self.clone()
+
+        if isinstance(other, Vector):
+            result.x *= other.x
+            result.y *= other.y
+        else:
+            result.x *= other
+            result.y *= other
+
+        return result
+
+    def __imul__(self, other: "Vector|float|int"):
+        if isinstance(other, Vector):
+            self.x *= other.x
+            self.y *= other.y
+        else:
+            self.x *= other
+            self.y *= other
 
         return self
 
-    def mul_point(self, other: Point):
-        self.x *= other.x
-        self.y *= other.y
+    def __div__(self, other: "Vector|float|int"):
+        result = self.clone()
+
+        if isinstance(other, Vector):
+            result.x /= other.x
+            result.y /= other.y
+        else:
+            result.x /= other
+            result.y /= other
+
+        return result
+
+    def __idiv__(self, other: "Vector|float|int"):
+        if isinstance(other, Vector):
+            self.x /= other.x
+            self.y /= other.y
+        else:
+            self.x /= other
+            self.y /= other
 
         return self
 
-    def __add__(self, other: "Vector|Point"):
-        self.x += other.x
-        self.y += other.y
+    def __add__(self, other: "Vector|float|int"):
+        result = self.clone()
+
+        if isinstance(other, Vector):
+            result.x += other.x
+            result.y += other.y
+        else:
+            result.x += other
+            result.y += other
+
+        return result
+
+    def __iadd__(self, other: "Vector|float|int"):
+        if isinstance(other, Vector):
+            self.x += other.x
+            self.y += other.y
+        else:
+            self.x += other
+            self.y += other
 
         return self
 
-    """Calcul non correct"""
-    def proj(self, vec: "Vector"):
-        norm = vec.norm()
-        if norm == 0:
-            norm = 1
+    def __sub__(self, other: "Vector|float|int"):
+        result = self.clone()
 
-        f = self.scalar(vec) / pow(norm, 2)
+        if isinstance(other, Vector):
+            result.x -= other.x
+            result.y -= other.y
+        else:
+            result.x -= other
+            result.y -= other
 
-        return self.a.clone().add_scalar(f).mul_vector(vec)
+        return result
 
-    """Paramétrisation d'un vecteur
-    :param k Constant number between 0 and 1
-    :returns Point on the Vector at k
-    """
-    def param(self, k: float):
-        x = (1 - k) * self.a.x + k * self.b.x
-        y = (1 - k) * self.a.y + k * self.b.y
-        return Point(x, y)
+    def __isub__(self, other: "Vector|float|int"):
+        if isinstance(other, Vector):
+            self.x -= other.x
+            self.y -= other.y
+        else:
+            self.x -= other
+            self.y -= other
 
-    def sym(self, vec: "Vector"):
-        # TODO: implement method
-        return vec
+        return self
 
-    def intersect(self, vec: "Vector"):
-        # TODO: implement method
-        return vec
+    def __neg__(self):
+        return Vector(-self.x, -self.y)
 
     def __str__(self):
         return "({0}, {1})".format(self.x, self.y)
