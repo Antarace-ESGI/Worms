@@ -21,7 +21,7 @@ def create_box_vertices(width: float, height: float):
 
 class Body(object):
     def __init__(self, position: Vector, width: float, height: float, static: bool = False, name: str = "Body"):
-        self.position = position + Vector(width / 2, height / 2)
+        self.position = position
         self.linear_velocity = zero_vector()
         self.vertices = create_box_vertices(width, height)
         self.width, self.height = width, height
@@ -42,5 +42,5 @@ class Body(object):
 
     def render(self, surface):
         color = RED if self.is_colliding else WHITE
-        rect = pygame.rect.Rect(self.position.x - self.width / 2, self.position.y - self.height / 2, self.width, self.height)
+        rect = pygame.rect.Rect(self.position.x, self.position.y, self.width, self.height)
         pygame.draw.rect(surface, color, rect)

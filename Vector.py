@@ -36,6 +36,9 @@ class Vector:
         sign = -1 if sign < 0 else 1
         return math.acos(s / (self.norm() * vec.norm())) * sign
 
+    def abs(self):
+        return Vector(abs(self.x), abs(self.y))
+
     def __mul__(self, other: "Vector|float|int"):
         result = self.clone()
 
@@ -79,6 +82,12 @@ class Vector:
             self.y /= other
 
         return self
+
+    def __truediv__(self, other: "Vector|float|int"):
+        return self.__div__(other)
+
+    def __itruediv__(self, other: "Vector|float|int"):
+        return self.__idiv__(other)
 
     def __add__(self, other: "Vector|float|int"):
         result = self.clone()
