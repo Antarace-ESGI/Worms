@@ -1,6 +1,6 @@
 from Vector import Vector
 
-GRAVITY = Vector(0, 0)
+GRAVITY = Vector(0, 90)
 FRICTION = 0.01
 MAX_FPS = 60
 SPEED = 100
