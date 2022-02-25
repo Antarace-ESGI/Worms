@@ -1,5 +1,5 @@
 import pygame
-from Constants import GRAVITY
+from Constants import *
 from Vector import Vector, zero_vector
 
 
@@ -9,29 +9,38 @@ def create_box_vertices(width: float, height: float):
     bottom = -height / 2
     top = bottom + height
 
-    vertices = [Vector(left, top), Vector(right, top), Vector(right, bottom), Vector(left, bottom)]
+    vertices = [
+        Vector(left, top),
+        Vector(right, top),
+        Vector(right, bottom),
+        Vector(left, bottom),
+    ]
 
     return vertices
 
 
 class Body(object):
     def __init__(self, position: Vector, width: float, height: float, static: bool = False, name: str = "Body"):
-        self.position = position
+        self.position = position + Vector(width / 2, height / 2)
         self.linear_velocity = zero_vector()
         self.vertices = create_box_vertices(width, height)
         self.width, self.height = width, height
         self.static = static
         self.name = name
+        self.is_colliding = False
 
-    def move(self, amount):
+    def move(self, amount: Vector):
         self.position += amount
 
     def tick(self, dt: float):
-        self.vertices = create_box_vertices(self.width, self.height)
         if not self.static:
             self.linear_velocity += GRAVITY * dt
         self.position += self.linear_velocity * dt
 
+    def get_transformed_vertices(self):
+        return [vertex + self.position for vertex in self.vertices]
+
     def render(self, surface):
-        rect = pygame.rect.Rect(self.position.x, self.position.y, self.width, self.height)
-        pygame.draw.rect(surface, (255, 255, 255), rect)
+        color = RED if self.is_colliding else WHITE
+        rect = pygame.rect.Rect(self.position.x - self.width / 2, self.position.y - self.height / 2, self.width, self.height)
+        pygame.draw.rect(surface, color, rect)

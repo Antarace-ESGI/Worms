@@ -1,5 +1,5 @@
 import math
-from Vector import Vector, zero_vector
+from Vector import Vector
 from Body import Body
 
 
@@ -18,57 +18,36 @@ def project_vertices(vertices: list[Vector], axis: Vector):
     return low, upper
 
 
-def intersect_polygons(center_a: Vector, vertices_a: list[Vector], center_b: Vector, vertices_b: list[Vector]):
-    normal = zero_vector()
-    depth = math.inf
+def intersect_vertices(vertices_a: list[Vector], vertices_b: list[Vector]):
+    length = len(vertices_a)
 
-    for i in range(len(vertices_a)):
+    for i in range(length):
         va = vertices_a[i]
-        vb = vertices_a[(i + 1) % len(vertices_a)]
+        vb = vertices_a[(i + 1) % length]
 
         edge = vb - va
-        axis = Vector(-edge.y, edge.x)
-        axis = axis.normalize()
+        normal = Vector(-edge.y, edge.x)
 
-        min_a, max_a = project_vertices(vertices_a, axis)
-        min_b, max_b = project_vertices(vertices_b, axis)
-
-        if min_a >= max_b or min_b >= max_a:
-            return False, normal, depth
-
-        axis_depth = min(max_b - min_a, max_a - min_b)
-
-        if axis_depth < depth:
-            depth = axis_depth
-            normal = axis
-
-    for i in range(len(vertices_b)):
-        va = vertices_b[i]
-        vb = vertices_b[(i + 1) % len(vertices_b)]
-
-        edge = vb - va
-        axis = Vector(-edge.y, edge.x)
-        axis = axis.normalize()
-
-        min_a, max_a = project_vertices(vertices_a, axis)
-        min_b, max_b = project_vertices(vertices_b, axis)
+        min_a, max_a = project_vertices(vertices_a, normal)
+        min_b, max_b = project_vertices(vertices_b, normal)
 
         if min_a >= max_b or min_b >= max_a:
-            return False, normal, depth
+            return False
 
-        axis_depth = min(max_b - min_a, max_a - min_b)
+    return True
 
-        if axis_depth < depth:
-            depth = axis_depth
-            normal = axis
 
-    direction = center_b - center_a
+def intersect_polygons(vertices_a: list[Vector], vertices_b: list[Vector]):
+    a = intersect_vertices(vertices_a, vertices_b)
+    if not a:
+        return False
 
-    if direction.dot(normal) < 0:
-        normal = -normal
+    b = intersect_vertices(vertices_b, vertices_a)
+    if not b:
+        return False
 
-    return True, normal, depth
+    return True
 
 
 def collide(body_a: Body, body_b: Body):
-    return intersect_polygons(body_a.position, body_a.vertices, body_b.position, body_a.vertices)
+    return intersect_polygons(body_a.get_transformed_vertices(), body_b.get_transformed_vertices())
