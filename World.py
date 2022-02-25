@@ -1,36 +1,40 @@
-import pygame
+import time
 
 from Body import Body
 from Collisions import collide, resolve_collision
 from Constants import *
+from Controls import controls, shoot_controls
 
 
 class World(object):
     def __init__(self):
+        self.turn = False
+        self.turn_start = time.time()
+        self.font = pygame.font.Font("freesansbold.ttf", 24)
+        self.text =  self.font.render(f'{TURN_DURATION}', True, (0, 0, 0))
+        self.timer = self.text.get_rect().center = (WIDTH // 2, HEIGHT * 0.05)
+
         # Init game objects
-        self.player = Body(Vector(128, 256), 64, 64, False, "p1")
+        self.player1 = Body(Vector(WIDTH / 2 - 32, 256), 64, 64, False)
+        self.player2 = Body(Vector(WIDTH / 2 - 32, 64), 64, 64, False)
 
         self.game_objects = [
-            self.player,
-            Body(Vector(128, 64), 64, 64, False, "p2"),
-            Body(Vector(0, HEIGHT - FLOOR_HEIGHT), WIDTH, FLOOR_HEIGHT, True, "floor"),
+            self.player1,
+            self.player2,
+            Body(Vector(0, HEIGHT - FLOOR_HEIGHT), WIDTH, FLOOR_HEIGHT, True),
         ]
 
-    def controls(self, dt: float):
-        keys = pygame.key.get_pressed()
-
-        self.player.move(Vector(
-            (keys[pygame.K_RIGHT] - keys[pygame.K_LEFT]) * dt * SPEED,
-            (keys[pygame.K_DOWN] - keys[pygame.K_UP]) * dt * SPEED
-        ))
-
     def tick(self, dt: float):
+        if int(time.time() - self.turn_start) == TURN_DURATION:
+            self.turn = not self.turn
+            self. turn_start = time.time()
+
+        controls(self.player1 if self.turn else self.player2, dt)
+
         # Movement step
         for obj in self.game_objects:
             if not obj.static:
                 obj.tick(dt)
-
-        self.controls(dt)
 
         # Collision step
         for i in range(len(self.game_objects) - 1):
@@ -52,5 +56,16 @@ class World(object):
                     resolve_collision(body_a, body_b, normal, depth)
 
     def render(self, screen):
+        screen.blit(self.text, self.timer)
+
+        self.text = self.font.render(f'{TURN_DURATION - int(time.time() - self.turn_start)}', True, (0, 0, 0))
+        self.timer = self.text.get_rect().center = (WIDTH // 2, HEIGHT * 0.05)
+
+        # Render game objects
         for obj in self.game_objects:
             obj.render(screen)
+
+    def tick_events(self, event):
+        projectile = shoot_controls(self.player1 if self.turn else self.player2, event)
+        if projectile:
+            self.game_objects.append(projectile)

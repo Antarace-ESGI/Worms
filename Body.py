@@ -43,4 +43,6 @@ class Body(object):
     def render(self, surface):
         color = RED if self.is_colliding else WHITE
         rect = pygame.rect.Rect(self.position.x - self.width / 2, self.position.y - self.height / 2, self.width, self.height)
+        outline_rect = pygame.rect.Rect(self.position.x - self.width / 2 - 1, self.position.y - self.height / 2 - 1, self.width + 2, self.height + 2)
+        pygame.draw.rect(surface, BLACK, outline_rect)
         pygame.draw.rect(surface, color, rect)

@@ -1,7 +1,5 @@
 import math
 
-import pygame
-
 
 def zero_vector():
     return Vector(0, 0)

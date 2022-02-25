@@ -1,7 +1,6 @@
 import sys
-import time
 import pygame
-from Constants import MAX_FPS, SIZE, WIDTH, HEIGHT
+from Constants import MAX_FPS, SIZE
 from World import World
 
 
@@ -15,14 +14,6 @@ def main():
 
     dt = 0
 
-    turn = True
-    turn_start = time.time()
-    turn_duration = 5
-
-    font = pygame.font.Font("freesansbold.ttf", 24)
-    text = font.render(f'{turn_duration}', True, (0, 0, 0))
-    timer = text.get_rect().center = (WIDTH // 2, HEIGHT * 0.05)
-
     while True:
         # Handle events
         for event in pygame.event.get():
@@ -30,9 +21,10 @@ def main():
             if event.type == pygame.QUIT:
                 quit_game()
 
+            world.tick_events(event)
+
         # Clear the screen
         screen.fill((140, 180, 255))
-        screen.blit(text, timer)
 
         world.tick(dt)
         world.render(screen)

@@ -1,13 +1,15 @@
 import math
+
+from Constants import FRICTION
 from Vector import Vector, zero_vector
 from Body import Body
 
 
 def resolve_collision(body_a: Body, body_b: Body, normal: Vector, depth: float):
     dampen = normal.abs()
-    dampen += 1
-    body_b.linear_velocity /= dampen
-    body_a.linear_velocity /= dampen
+    dampen *= FRICTION
+    body_b.linear_velocity *= dampen
+    body_a.linear_velocity *= dampen
 
 
 def project_vertices(vertices: list[Vector], axis: Vector):
