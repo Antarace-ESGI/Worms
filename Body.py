@@ -20,14 +20,14 @@ def create_box_vertices(width: float, height: float):
 
 
 class Body(object):
-    def __init__(self, position: Vector, width: float, height: float, static: bool = False, name: str = "Body"):
+    def __init__(self, position: Vector, width: float, height: float, static: bool = False, destroy=None):
         self.position = position + Vector(width / 2, height / 2)
         self.linear_velocity = zero_vector()
         self.vertices = create_box_vertices(width, height)
         self.width, self.height = width, height
         self.static = static
-        self.name = name
         self.is_colliding = False
+        self.destroy = destroy
 
     def move(self, amount: Vector):
         self.position += amount
