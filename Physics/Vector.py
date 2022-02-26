@@ -39,6 +39,11 @@ class Vector:
     def abs(self):
         return Vector(abs(self.x), abs(self.y))
 
+    def param(self, k: float):
+        x = k * self.x
+        y = k * self.y
+        return Vector(x, y)
+
     def __mul__(self, other: "Vector|float|int"):
         result = self.clone()
 

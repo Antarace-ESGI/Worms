@@ -10,6 +10,7 @@ class Player(Body):
     def __init__(self, position: Vector, width: float, height: float):
         Body.__init__(self, position, width, height)
         self.health = MAX_HEALTH
+        self.has_shoot = False
 
     def tick(self, dt: float):
         Body.tick(self, dt)
@@ -22,7 +23,7 @@ class Player(Body):
         pygame.draw.rect(surface, WHITE, outline_rect)
         pygame.draw.rect(surface, RED, rect)
 
-    def collide(self, body, normal, depth):
-        if isinstance(body, Projectile):
+    def collide(self, other, normal, depth):
+        if isinstance(other, Projectile):
             self.health -= 1
-            body.destroy()
+            other.destroy()

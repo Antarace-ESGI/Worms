@@ -84,7 +84,3 @@ def intersect_polygons(vertices_a: list[Vector], vertices_b: list[Vector]):
         normal = -normal
 
     return True, normal, depth
-
-
-def collide(body_a: Body, body_b: Body):
-    return intersect_polygons(body_a.get_transformed_vertices(), body_b.get_transformed_vertices())

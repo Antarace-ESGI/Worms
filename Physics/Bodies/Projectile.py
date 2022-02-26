@@ -8,13 +8,16 @@ class Projectile(Body):
         Body.__init__(self, position, width, height)
         self.life = 0
         self.world = world
+        self.start_position = position
 
     def tick(self, dt: float):
-        self.position += self.linear_velocity * dt
-
         self.life += dt
-        if self.world and self.life >= PROJECTILE_LIFE:
+
+        self.position = self.start_position + self.linear_velocity.param(self.life / PROJECTILE_LIFE)
+
+        if self.life >= PROJECTILE_LIFE:
             self.destroy()
 
     def destroy(self):
-        self.world.destroy(self)
+        if self.world:
+            self.world.destroy(self)

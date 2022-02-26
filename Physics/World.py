@@ -3,9 +3,9 @@ import pygame
 
 from Physics.Bodies.Body import Body
 from Constants import *
-from Controls import controls, shoot_controls
+from Controls import controls, shoot_controls, shoot_positions
 from Physics.Bodies.Player import Player
-from Physics.Collisions import resolve_collision, collide
+from Physics.Collisions import resolve_collision, intersect_polygons
 
 
 class World(object):
@@ -27,9 +27,8 @@ class World(object):
         ]
 
     def tick(self, dt: float):
-        if int(time.time() - self.turn_start) == TURN_DURATION:
-            self.turn = not self.turn
-            self. turn_start = time.time()
+        if time.time() - self.turn_start >= TURN_DURATION:
+            self.end_turn()
 
         controls(self.player1 if self.turn else self.player2, dt)
 
@@ -38,35 +37,46 @@ class World(object):
             if not obj.static:
                 obj.tick(dt)
 
+        collision_events = set()
+
         # Collision step
-        try:
-            for i in range(len(self.game_objects) - 1):
-                body_a = self.game_objects[i]
-                for j in range(i + 1, len(self.game_objects)):
-                    body_b = self.game_objects[j]
+        for i in range(len(self.game_objects) - 1):
+            body_a = self.game_objects[i]
+            for j in range(i + 1, len(self.game_objects)):
+                body_b = self.game_objects[j]
 
-                    collision, normal, depth = collide(body_a, body_b)
+                collision, normal, depth = intersect_polygons(body_a.get_transformed_vertices(),
+                                                              body_b.get_transformed_vertices())
 
-                    if collision:
-                        if body_a.static:
-                            body_b.move(normal * depth)
-                            body_b.collide(body_a, normal, depth)
-                        elif body_b.static:
-                            body_a.move(-normal * depth)
-                            body_a.collide(body_b, normal, depth)
-                        else:
-                            body_a.collide(body_b, normal, depth)
-                            body_b.collide(body_a, normal, depth)
-                            body_a.move(-normal * depth * 0.5)
-                            body_b.move(normal * depth * 0.5)
+                if collision:
+                    collision_events.add((body_a, body_b, normal, depth))
 
-                        resolve_collision(body_a, body_b, normal, depth)
-        except IndexError:
-            print("Oops")
+                    if body_a.static:
+                        body_b.move(normal * depth)
+                    elif body_b.static:
+                        body_a.move(-normal * depth)
+                    else:
+                        body_a.move(-normal * depth * 0.5)
+                        body_b.move(normal * depth * 0.5)
+
+                    resolve_collision(body_a, body_b, normal, depth)
+
+        # Handle collision events
+        for collision_event in collision_events:
+            body_a, body_b, normal, depth = collision_event
+
+            if body_a.static:
+                body_b.collide(body_a, normal, depth)
+            elif body_b.static:
+                body_a.collide(body_b, normal, depth)
+            else:
+                body_a.collide(body_b, normal, depth)
+                body_b.collide(body_a, normal, depth)
 
     def render(self, screen):
         screen.blit(self.text, self.timer)
 
+        # Render timer
         self.text = self.font.render(f'{TURN_DURATION - int(time.time() - self.turn_start)}', True, (0, 0, 0))
         self.timer = self.text.get_rect().center = (WIDTH // 2, HEIGHT * 0.05)
 
@@ -74,10 +84,29 @@ class World(object):
         for obj in self.game_objects:
             obj.render(screen)
 
+        # Render projectile path
+        player = self.player1 if self.turn else self.player2
+
+        if not player.has_shoot:
+            start_pos, end_pos = shoot_positions(player, None)
+            pygame.draw.line(screen, BLACK, start_pos.to_tuple(), (start_pos + end_pos).to_tuple())
+
     def tick_events(self, event):
-        projectile = shoot_controls(self.player1 if self.turn else self.player2, event, self)
-        if projectile:
-            self.game_objects.append(projectile)
+        player = self.player1 if self.turn else self.player2
+
+        if not player.has_shoot:
+            projectile = shoot_controls(player, event, self)
+
+            if projectile:
+                self.game_objects.append(projectile)
 
     def destroy(self, body: Body):
-        self.game_objects.remove(body)
+        if body in self.game_objects:
+            self.game_objects.remove(body)
+
+    def end_turn(self):
+        player = self.player1 if self.turn else self.player2
+        player.has_shoot = False
+
+        self.turn = not self.turn
+        self.turn_start = time.time()

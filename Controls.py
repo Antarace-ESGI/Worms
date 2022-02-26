@@ -15,14 +15,26 @@ def controls(player, dt: float):
     ))
 
 
+def shoot_positions(player, projectile_type):
+    x, y = pygame.mouse.get_pos()
+    angle = math.atan2(y - player.position.y, x - player.position.x)
+
+    start_pos = Vector(player.position.x + math.cos(angle) * player.width,
+                       player.position.y + math.sin(angle) * player.height)
+
+    end_pos = Vector(math.cos(angle) * 500,
+                     math.sin(angle) * 500)
+
+    return start_pos, end_pos
+
+
 def shoot_controls(player, event, world=None):
     if event.type == pygame.MOUSEBUTTONUP:
-        x, y = pygame.mouse.get_pos()
-        angle = math.atan2(y - player.position.y, x - player.position.x)
+        pos, vel = shoot_positions(player, None)
 
-        pos = Vector(player.position.x + math.cos(angle) * player.width,
-                     player.position.y + math.sin(angle) * player.height)
         projectile = Projectile(pos, 16, 16, world=world)
-        projectile.linear_velocity.x = math.cos(angle) * 100
-        projectile.linear_velocity.y = math.sin(angle) * 100
+        projectile.linear_velocity = vel
+
+        player.has_shoot = True
+
         return projectile
