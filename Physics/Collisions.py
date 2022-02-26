@@ -1,8 +1,8 @@
 import math
 
 from Constants import FRICTION
-from Vector import Vector, zero_vector
-from Body import Body
+from Physics.Bodies.Body import Body
+from Physics.Vector import Vector, zero_vector
 
 
 def resolve_collision(body_a: Body, body_b: Body, normal: Vector, depth: float):

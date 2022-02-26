@@ -1,11 +1,11 @@
 import time
-
 import pygame
 
-from Body import Body
-from Collisions import collide, resolve_collision
+from Physics.Bodies.Body import Body
 from Constants import *
 from Controls import controls, shoot_controls
+from Physics.Bodies.Player import Player
+from Physics.Collisions import resolve_collision, collide
 
 
 class World(object):
@@ -17,13 +17,13 @@ class World(object):
         self.timer = self.text.get_rect().center = (WIDTH // 2, HEIGHT * 0.05)
 
         # Init game objects
-        self.player1 = Body(Vector(WIDTH / 2 - 32, 256), 64, 64, destroy=self.destroy)
-        self.player2 = Body(Vector(WIDTH / 2 - 32, 64), 64, 64, destroy=self.destroy)
+        self.player1 = Player(Vector(WIDTH / 2 - 32, 256), 64, 64)
+        self.player2 = Player(Vector(WIDTH / 2 - 32, 64), 64, 64)
 
         self.game_objects = [
             self.player1,
             self.player2,
-            Body(Vector(0, HEIGHT - FLOOR_HEIGHT), WIDTH, FLOOR_HEIGHT, True, self.destroy),
+            Body(Vector(0, HEIGHT - FLOOR_HEIGHT), WIDTH, FLOOR_HEIGHT, True),
         ]
 
     def tick(self, dt: float):
@@ -49,9 +49,13 @@ class World(object):
                 if collision:
                     if body_a.static:
                         body_b.move(normal * depth)
+                        body_b.collide(body_a, normal, depth)
                     elif body_b.static:
                         body_a.move(-normal * depth)
+                        body_a.collide(body_b, normal, depth)
                     else:
+                        body_a.collide(body_b, normal, depth)
+                        body_b.collide(body_a, normal, depth)
                         body_a.move(-normal * depth * 0.5)
                         body_b.move(normal * depth * 0.5)
 
@@ -68,7 +72,7 @@ class World(object):
             obj.render(screen)
 
     def tick_events(self, event):
-        projectile = shoot_controls(self.player1 if self.turn else self.player2, event, self.destroy)
+        projectile = shoot_controls(self.player1 if self.turn else self.player2, event, self)
         if projectile:
             self.game_objects.append(projectile)
 

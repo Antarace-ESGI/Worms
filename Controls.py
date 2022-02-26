@@ -1,11 +1,9 @@
 import math
-
 import pygame
 
-from Body import Body
 from Constants import SPEED
-from Projectile import Projectile
-from Vector import Vector
+from Physics.Bodies.Projectile import Projectile
+from Physics.Vector import Vector
 
 
 def controls(player, dt: float):
@@ -17,14 +15,14 @@ def controls(player, dt: float):
     ))
 
 
-def shoot_controls(player, event, destroy=None):
+def shoot_controls(player, event, world=None):
     if event.type == pygame.MOUSEBUTTONUP:
         x, y = pygame.mouse.get_pos()
         angle = math.atan2(y - player.position.y, x - player.position.x)
 
         pos = Vector(player.position.x + math.cos(angle) * player.width,
                      player.position.y + math.sin(angle) * player.height)
-        projectile = Projectile(pos, 16, 16, destroy=destroy)
+        projectile = Projectile(pos, 16, 16, world=world)
         projectile.linear_velocity.x = math.cos(angle) * 100
         projectile.linear_velocity.y = math.sin(angle) * 100
         return projectile

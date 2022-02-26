@@ -1,4 +1,4 @@
-from Vector import Vector
+from Physics.Vector import Vector
 
 GRAVITY = Vector(0, 98.1)
 FRICTION = 0.05
@@ -11,3 +11,4 @@ BLACK = (0, 0, 0)
 RED = (255, 0, 0)
 TURN_DURATION = 5
 PROJECTILE_LIFE = 5
+MAX_HEALTH = 10
