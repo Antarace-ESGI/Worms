@@ -9,9 +9,7 @@ def main():
     pygame.init()
     screen = pygame.display.set_mode(SIZE)
     clock = pygame.time.Clock()
-
     world = World()
-
     dt = 0
 
     while True:

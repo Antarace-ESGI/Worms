@@ -89,7 +89,7 @@ class World(object):
 
         if not player.has_shoot:
             start_pos, end_pos = shoot_positions(player, None)
-            pygame.draw.line(screen, BLACK, start_pos.to_tuple(), (start_pos + end_pos).to_tuple())
+            pygame.draw.line(screen, BLACK_COLOR, start_pos.to_tuple(), (start_pos + end_pos).to_tuple())
 
     def tick_events(self, event):
         player = self.player1 if self.turn else self.player2

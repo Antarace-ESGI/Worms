@@ -1,14 +1,26 @@
 from Physics.Vector import Vector
 
+# Physics
 GRAVITY = Vector(0, 98.1)
 FRICTION = 0.05
-MAX_FPS = 60
 SPEED = 100
+
+# Game objects
 FLOOR_HEIGHT = 32
+
+# Window
+MAX_FPS = 60
 SIZE = WIDTH, HEIGHT = 1280, 720
-WHITE = (255, 255, 255)
-BLACK = (0, 0, 0)
-RED = (255, 0, 0)
+
+# Colors
+WHITE_COLOR = (255, 255, 255)
+BLACK_COLOR = (0, 0, 0)
+RED_COLOR = (255, 0, 0)
+GREEN_COLOR = (0, 255, 0)
+BLUE_COLOR = (0, 0, 255)
+
+# Game options
 TURN_DURATION = 5
 PROJECTILE_LIFE = 2
 MAX_HEALTH = 10
+WEAPONS = ("G", "R")

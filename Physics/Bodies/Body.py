@@ -1,6 +1,6 @@
-import pygame
 from Constants import *
 from Physics.Vector import zero_vector
+from Utils import draw_outline_rect
 
 
 def create_box_vertices(width: float, height: float):
@@ -39,10 +39,7 @@ class Body(object):
         return [vertex + self.position for vertex in self.vertices]
 
     def render(self, surface):
-        rect = pygame.rect.Rect(self.position.x - self.width / 2, self.position.y - self.height / 2, self.width, self.height)
-        outline_rect = pygame.rect.Rect(self.position.x - self.width / 2 - 1, self.position.y - self.height / 2 - 1, self.width + 2, self.height + 2)
-        pygame.draw.rect(surface, BLACK, outline_rect)
-        pygame.draw.rect(surface, WHITE, rect)
+        draw_outline_rect(surface, self.position.x - self.width / 2, self.position.y - self.height / 2, self.width, self.height, WHITE_COLOR, BLACK_COLOR, 1)
 
     def collide(self, body, normal, depth):
         pass
