@@ -39,27 +39,30 @@ class World(object):
                 obj.tick(dt)
 
         # Collision step
-        for i in range(len(self.game_objects) - 1):
-            body_a = self.game_objects[i]
-            for j in range(i + 1, len(self.game_objects)):
-                body_b = self.game_objects[j]
+        try:
+            for i in range(len(self.game_objects) - 1):
+                body_a = self.game_objects[i]
+                for j in range(i + 1, len(self.game_objects)):
+                    body_b = self.game_objects[j]
 
-                collision, normal, depth = collide(body_a, body_b)
+                    collision, normal, depth = collide(body_a, body_b)
 
-                if collision:
-                    if body_a.static:
-                        body_b.move(normal * depth)
-                        body_b.collide(body_a, normal, depth)
-                    elif body_b.static:
-                        body_a.move(-normal * depth)
-                        body_a.collide(body_b, normal, depth)
-                    else:
-                        body_a.collide(body_b, normal, depth)
-                        body_b.collide(body_a, normal, depth)
-                        body_a.move(-normal * depth * 0.5)
-                        body_b.move(normal * depth * 0.5)
+                    if collision:
+                        if body_a.static:
+                            body_b.move(normal * depth)
+                            body_b.collide(body_a, normal, depth)
+                        elif body_b.static:
+                            body_a.move(-normal * depth)
+                            body_a.collide(body_b, normal, depth)
+                        else:
+                            body_a.collide(body_b, normal, depth)
+                            body_b.collide(body_a, normal, depth)
+                            body_a.move(-normal * depth * 0.5)
+                            body_b.move(normal * depth * 0.5)
 
-                    resolve_collision(body_a, body_b, normal, depth)
+                        resolve_collision(body_a, body_b, normal, depth)
+        except IndexError:
+            print("Oops")
 
     def render(self, screen):
         screen.blit(self.text, self.timer)
