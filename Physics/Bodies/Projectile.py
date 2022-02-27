@@ -54,4 +54,5 @@ class Projectile(Body):
                 sum_y = pow(i.position.y - self.position.y, 2)
                 dist = sqrt(sum_x + sum_y)
                 if dist <= distance:
-                    i.health -= ((int(dist / 50)) * 2.0)
+                    i.health -= (MAX_HEALTH-((int(dist / 50)) * 2.0))
+
