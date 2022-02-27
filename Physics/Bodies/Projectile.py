@@ -1,26 +1,33 @@
 from Constants import *
 from Physics.Bodies.Body import Body
 from Physics.Bodies.Player import Player
-from Physics.Vector import Vector
+from Physics.Vector import Vector, zero_vector
 from Utils import draw_outline_rect
-from math import sqrt, pow
+from math import sqrt, pow, cos, sin
+
+
+def calculate_position(start_velocity: float, angle: float, life: float, start_pos: Vector):
+    x = start_velocity * cos(angle) * life + start_pos.x
+    y = (GRAVITY.y / 2) * pow(life, 2) + start_velocity * sin(angle) * life + start_pos.y
+
+    return x, y
 
 
 class Projectile(Body):
-    def __init__(self, position: Vector, width: float, height: float, world=None, weapon_type=None):
+    def __init__(self, position: Vector, width: float, height: float, world=None, weapon_type=None, angle: float = 0, start_velocity: float = 1):
         Body.__init__(self, position, width, height)
         self.life = 0
         self.world = world
         self.start_position = position
         self.weapon_type = weapon_type
+        self.start_velocity = start_velocity
+        self.angle = angle
 
     def tick(self, dt: float):
         self.life += dt
+        self.linear_velocity = zero_vector()
 
-        self.position = self.start_position + self.linear_velocity.param(self.life / PROJECTILE_LIFE)
-
-        if self.weapon_type == "G":
-            self.linear_velocity += GRAVITY * dt
+        self.position.x, self.position.y = calculate_position(self.start_velocity, self.angle, self.life, self.start_position)
 
         if self.life >= PROJECTILE_LIFE:
             self.destroy()

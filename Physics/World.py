@@ -1,11 +1,24 @@
-import time
 import pygame
+import time
 
-from Physics.Bodies.Body import Body
 from Constants import *
 from Controls import controls, shoot_controls, shoot_positions
+from Physics.Bodies.Body import Body
 from Physics.Bodies.Player import Player
+from Physics.Bodies.Projectile import calculate_position
 from Physics.Collisions import resolve_collision, intersect_polygons
+
+
+def render_projectile_path(screen, player):
+    start_pos, start_velocity, angle = shoot_positions(player)
+    previous_pos, life = start_pos, 0
+
+    while life < PROJECTILE_LIFE:
+        x, y = calculate_position(start_velocity, angle, life, start_pos)
+        end_pos = Vector(x, y)
+        pygame.draw.line(screen, BLACK_COLOR, previous_pos.to_tuple(), end_pos.to_tuple())
+        previous_pos = end_pos
+        life += 0.1
 
 
 class World(object):
@@ -88,8 +101,7 @@ class World(object):
         player = self.player1 if self.turn else self.player2
 
         if not player.has_shoot:
-            start_pos, end_pos = shoot_positions(player, None)
-            pygame.draw.line(screen, BLACK_COLOR, start_pos.to_tuple(), (start_pos + end_pos).to_tuple())
+            render_projectile_path(screen, player)
 
     def tick_events(self, event):
         player = self.player1 if self.turn else self.player2
