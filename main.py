@@ -19,14 +19,18 @@ def main():
             # Handle global events
             if event.type == pygame.QUIT:
                 quit_game()
-
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_r:
+                    world.can_play = True
+                    main()
             world.tick_events(event)
 
-        # Clear the screen
-        screen.fill((140, 180, 255))
+        if world.can_play:
+            # Clear the screen
+            screen.fill((140, 180, 255))
 
-        world.tick(dt)
-        world.render(screen)
+            world.tick(dt)
+            world.render(screen)
 
         # Complete the frame
         pygame.display.update()
