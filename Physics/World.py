@@ -5,6 +5,7 @@ from Constants import *
 from Controls import controls, shoot_controls, shoot_positions
 from Physics.Bodies.Body import Body
 from Physics.Bodies.Player import Player
+from Physics.Bodies.PolyBody import PolyBody
 from Physics.Bodies.Projectile import calculate_position
 from Physics.Collisions import resolve_collision, intersect_polygons
 
@@ -37,6 +38,10 @@ class World(object):
             self.player1,
             self.player2,
             Body(Vector(0, HEIGHT - FLOOR_HEIGHT), WIDTH, FLOOR_HEIGHT, True),
+            PolyBody(Vector(100, 0), 10),
+            PolyBody(Vector(100, 0), 10),
+            PolyBody(Vector(100, 0), 10),
+            PolyBody(Vector(100, 0), 10),
         ]
 
     def tick(self, dt: float):
