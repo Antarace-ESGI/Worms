@@ -118,10 +118,9 @@ class World(object):
         if self.player2.health == 0:
             screen.blit(self.vtext1, self.vtpos)
 
-        if self.player1.health == 0 or self.player2.health == 0:
+        if self.player1.health <= 0 or self.player2.health <= 0:
             self.can_play = False
             screen.blit(self.rtext, self.rtpos)
-            # afficher bouton recommencer
 
     def tick_events(self, event):
         player = self.player1 if self.turn else self.player2
