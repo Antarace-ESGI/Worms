@@ -35,6 +35,11 @@ class Projectile(Body):
     def collide(self, other, normal, depth):
         if isinstance(other, Player):
             other.health -= 1
+            if other.health == 0:
+                print("bonjour")
+
+
+
 
         if self.world:
             self.world.destroy(self)
