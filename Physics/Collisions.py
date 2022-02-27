@@ -8,8 +8,8 @@ from Physics.Vector import Vector, zero_vector
 def resolve_collision(body_a: Body, body_b: Body, normal: Vector, depth: float):
     dampen = normal.abs()
     dampen *= FRICTION
-    body_b.linear_velocity *= dampen
     body_a.linear_velocity *= dampen
+    body_b.linear_velocity *= dampen
 
 
 def project_vertices(vertices: list[Vector], axis: Vector):

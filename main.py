@@ -1,5 +1,6 @@
 import sys
 import pygame
+
 from Constants import MAX_FPS, SIZE
 from Physics.World import World
 

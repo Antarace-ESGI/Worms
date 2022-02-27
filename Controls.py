@@ -15,25 +15,24 @@ def controls(player, dt: float):
     ))
 
 
-def shoot_positions(player, weapon):
+def shoot_positions(player):
     x, y = pygame.mouse.get_pos()
     angle = math.atan2(y - player.position.y, x - player.position.x)
 
     start_pos = Vector(player.position.x + math.cos(angle) * player.width,
                        player.position.y + math.sin(angle) * player.height)
 
-    end_pos = Vector(math.cos(angle) * 100, math.sin(angle) * 100) if weapon == "G" \
-        else Vector(math.cos(angle) * 500, math.sin(angle) * 500)
+    velocity = 200 if player.current_weapon == "G" else 500
 
-    return start_pos, end_pos
+    return start_pos, velocity, angle
 
 
 def shoot_controls(player, event, world=None):
     if event.type == pygame.MOUSEBUTTONUP:
         if event.button == 1:  # left click
-            pos, vel = shoot_positions(player, None)
+            pos, vel, angle = shoot_positions(player)
 
-            projectile = Projectile(pos, 16, 16, world=world, weapon_type=player.current_weapon)
+            projectile = Projectile(pos, 16, 16, world=world, weapon_type=player.current_weapon, start_velocity=vel, angle=angle)
             projectile.linear_velocity = vel
 
             player.has_shoot = True
