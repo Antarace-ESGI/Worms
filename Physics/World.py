@@ -16,14 +16,14 @@ class World(object):
         self.text = self.font.render(f'{TURN_DURATION}', True, (0, 0, 0))
         self.timer = self.text.get_rect().center = (WIDTH // 2, HEIGHT * 0.05)
 
-        self.vtext1 = self.font.render(f'PLAYER 1 WINS ! ', True, (0, 0, 0))
-        self.vtext2 = self.font.render(f'PLAYER 2 WINS ! ', True, (0, 0, 0))
-        self.rtext = self.font.render(f'PRESS R TO RESTART ', True, (0, 0, 0))
+        self.vtext1 = self.font.render("PLAYER 1 WINS !", True, (0, 0, 0))
+        self.vtext2 = self.font.render("PLAYER 2 WINS !", True, (0, 0, 0))
+        self.rtext = self.font.render("PRESS R TO RESTART", True, (0, 0, 0))
 
         self.vtpos = self.vtext1.get_rect(center=(WIDTH / 2, HEIGHT / 2))
         self.rtpos = self.vtext1.get_rect(center=(WIDTH / 2.1, HEIGHT / 1.8))
 
-        self.canPlay = True
+        self.can_play = True
 
         # Init game objects
         self.player1 = Player(Vector(WIDTH / 2 - 32, 256), 64, 64)
@@ -107,13 +107,9 @@ class World(object):
             screen.blit(self.vtext1, self.vtpos)
 
         if self.player1.health == 0 or self.player2.health == 0:
-            self.canPlay = False
+            self.can_play = False
             screen.blit(self.rtext, self.rtpos)
-            #afficher bouton recommencer
-
-
-
-
+            # afficher bouton recommencer
 
     def tick_events(self, event):
         player = self.player1 if self.turn else self.player2
